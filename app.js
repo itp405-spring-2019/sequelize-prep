@@ -163,7 +163,6 @@ app.post('/api/genres', function(request, response) {
     });
 });
 
-// don't do this in class. this is part of the lab
 app.delete('/api/playlists/:id', function(request, response) {
   let { id } = request.params;
 
@@ -176,6 +175,7 @@ app.delete('/api/playlists/:id', function(request, response) {
   });
 });
 
+// skip this since this is similar to the lab
 app.patch('/api/genres/:id', function(request, response) {
   let { id } = request.params;
 
