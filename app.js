@@ -163,16 +163,27 @@ app.post('/api/genres', function(request, response) {
     });
 });
 
+// Another approach is to soft delete the playlist. This way you don't have to
+// cascade delete the records in playlist_track and you preserve the data.
 app.delete('/api/playlists/:id', function(request, response) {
   let { id } = request.params;
 
-  Playlist.destroy({
-    where: { id }
-  }).then(() => {
-    response.status(204).send();
-  }, (error) => {
-    response.status(404).json(error);
-  });
+  Playlist
+    .findByPk(id)
+    .then((playlist) => {
+      if (playlist) {
+        return playlist.setTracks([]).then((a) => {
+          return playlist.destroy();
+        });
+      } else {
+        return Promise.reject();
+      }
+    })
+    .then(() => {
+      response.status(204).send();
+    }, () => {
+      response.status(404).send();
+    });
 });
 
 // skip this since this is similar to the lab
