@@ -50,6 +50,20 @@ app.get('/api/genres', function(request, response) {
   });
 });
 
+app.get('/api/genres/:id', function(request, response) {
+  let { id } = request.params;
+
+  Genre
+    .findByPk(id)
+    .then((genre) => {
+      if (genre) {
+        response.json(genre);
+      } else {
+        response.status(404).send();
+      }
+    });
+});
+
 app.get('/api/playlists', function(request, response) {
   Playlist.findAll().then((playlists) => {
     response.json(playlists);
@@ -92,22 +106,6 @@ app.get('/api/tracks/:id', function(request, response) {
     });
 });
 
-app.get('/api/genres/:id', function(request, response) {
-  let { id } = request.params;
-
-  Genre
-    .findByPk(id)
-    .then((genre) => {
-      if (genre) {
-        response.json(genre);
-      } else {
-        response.status(404).json({
-          error: `Genre ${id} not found`
-        });
-      }
-    });
-});
-
 app.get('/api/albums/:id', function(request, response) {
   let { id } = request.params;
 
@@ -119,9 +117,7 @@ app.get('/api/albums/:id', function(request, response) {
       if (album) {
         response.json(album);
       } else {
-        response.status(404).json({
-          error: `Album ${id} not found`
-        });
+        response.status(404).send();
       }
     });
 });
@@ -137,9 +133,7 @@ app.get('/api/artists/:id', function(request, response) {
       if (artist) {
         response.json(artist);
       } else {
-        response.status(404).json({
-          error: `Artist ${id} not found`
-        });
+        response.status(404).send();
       }
     });
 });
@@ -199,7 +193,7 @@ app.patch('/api/genres/:id', function(request, response) {
     // console.log({ numberOfAffectedRows });
     return Genre.findByPk(id);
   }, () => {
-    response.status(404);
+    response.status(404).send();
   })
   .then((genre) => {
     response.json(genre);
